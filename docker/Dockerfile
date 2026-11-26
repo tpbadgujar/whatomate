@@ -1,15 +1,15 @@
-# Frontend build stage — pinned to BUILDPLATFORM (output is arch-agnostic JS).
-FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend-builder
-
-WORKDIR /app/frontend
-
-# Copy frontend dependency files first for caching
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
-
-# Copy frontend source and build
-COPY frontend/ .
-RUN npm run build
+# Frontend build stage — commented out because UI is deployed separately
+# FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend-builder
+#
+# WORKDIR /app/frontend
+#
+# # Copy frontend dependency files first for caching
+# COPY frontend/package.json frontend/package-lock.json ./
+# RUN npm ci
+#
+# # Copy frontend source and build
+# COPY frontend/ .
+# RUN npm run build
 
 # Go build stage — runs on BUILDPLATFORM, cross-compiles to TARGETOS/TARGETARCH
 # so multi-arch builds don't emulate the Go toolchain under QEMU.
@@ -30,8 +30,8 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Embed frontend build into Go binary
-COPY --from=frontend-builder /app/frontend/dist/ ./internal/frontend/dist/
+# Embed frontend build into Go binary (commented out — UI deployed separately; internal/frontend/dist/.gitkeep keeps go:embed valid)
+# COPY --from=frontend-builder /app/frontend/dist/ ./internal/frontend/dist/
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o whatomate ./cmd/whatomate
