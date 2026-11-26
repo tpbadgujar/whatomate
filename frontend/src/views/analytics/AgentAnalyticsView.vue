@@ -183,10 +183,13 @@ const agentOptions = computed<ComboOption[]>(() => [
 ])
 
 const isAllAgents = computed(() => isAdminOrManager.value && selectedAgentId.value === 'all')
-
-// An average of 0 means nothing was measured yet: show a dash, not "0m".
-const avgTile = (mins: number, hint: string) =>
-  mins > 0 ? { value: formatMinutes(mins), hint } : { value: '—', hint: t('agentAnalytics.noDataYet') }
+const activeTab = ref<'overview' | 'leaderboard'>('overview')
+const selectedAgentName = computed(() =>
+  agents.value.find(a => a.id === selectedAgentId.value)?.full_name || ''
+)
+const availableAgentsCount = computed(() =>
+  (analytics.value?.agent_stats ?? []).filter(a => a.is_available).length
+)
 
 const statTiles = computed(() => {
   const a = analytics.value
@@ -212,14 +215,16 @@ const statTiles = computed(() => {
       key: 'resolution',
       icon: Clock,
       label: t('agentAnalytics.avgResolutionTime'),
-      ...avgTile(all ? (a.summary?.avg_resolution_mins ?? 0) : (a.my_stats?.avg_resolution_mins ?? 0), t('agentAnalytics.timeToResolve'))
+      value: formatMinutes(all ? (a.summary?.avg_resolution_mins ?? 0) : (a.my_stats?.avg_resolution_mins ?? 0)),
+      hint: t('agentAnalytics.timeToResolve')
     },
     isAllAgents.value
       ? {
           key: 'queue',
           icon: Clock,
           label: t('agentAnalytics.avgQueueTime'),
-          ...avgTile(a.summary?.avg_queue_time_mins || 0, t('agentAnalytics.waitBeforeAssignment'))
+          value: formatMinutes(a.summary?.avg_queue_time_mins || 0),
+          hint: t('agentAnalytics.waitBeforeAssignment')
         }
       : {
           key: 'messages',
@@ -281,8 +286,8 @@ void _displayStats.value // Suppress unused warning
     </PageHeader>
 
     <!-- Content -->
-    <div class="flex-1 scroll-y p-4">
-      <div class="vstack gap-4">
+    <div class="flex-1 scroll-y" data-page-body>
+      <div class="vstack gap-5">
         <!-- Error State -->
         <ErrorState
           v-if="error && !isLoading"
@@ -292,83 +297,186 @@ void _displayStats.value // Suppress unused warning
           @retry="fetchAnalytics"
         />
 
-        <!-- Stats Cards -->
-        <div v-if="!error" class="stat-grid" data-testid="agent-stats">
+        <!-- CRM View & Filter Ribbon -->
+        <div v-if="!error && !isLoading" class="crm-toolbar">
+          <div class="hstack items-center gap-3 flex-wrap">
+            <div v-if="isAllAgents" role="tablist">
+              <button
+                type="button"
+                role="tab"
+                :aria-selected="activeTab === 'overview'"
+                @click="activeTab = 'overview'"
+              >
+                {{ $t('nav.overview') }}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                :aria-selected="activeTab === 'leaderboard'"
+                @click="activeTab = 'leaderboard'"
+              >
+                {{ $t('agentAnalytics.agentComparison') }}
+              </button>
+            </div>
+
+            <span v-if="selectedAgentId !== 'all' && selectedAgentName" class="badge outline hstack items-center gap-2">
+              <span>{{ selectedAgentName }}</span>
+              <button
+                type="button"
+                class="ghost icon small"
+                style="width: 1rem; height: 1rem; min-height: 0; padding: 0;"
+                :aria-label="$t('common.clear', 'Clear')"
+                @click="selectedAgentId = 'all'"
+              >
+                ×
+              </button>
+            </span>
+          </div>
+
+          <div v-if="isAllAgents && (analytics?.agent_stats?.length ?? 0) > 0" class="hstack items-center gap-2">
+            <span class="status-dot" data-state="online"></span>
+            <small class="text-light">
+              {{ availableAgentsCount }} / {{ analytics?.agent_stats?.length }} {{ $t('userMenu.available') }}
+            </small>
+          </div>
+        </div>
+
+        <!-- 5-Column Hero KPI Strip -->
+        <div v-if="!error" class="bento-kpi-grid" data-testid="agent-stats">
           <template v-if="isLoading">
-            <article v-for="i in 5" :key="i" class="card vstack" data-widget="number" aria-busy="true">
-              <div role="status" class="skeleton line" data-size="label"></div>
-              <div role="status" class="skeleton line" data-size="value"></div>
+            <article v-for="i in 5" :key="i" class="card kpi-card" aria-busy="true">
+              <div role="status" class="skeleton line" style="width: 60%"></div>
+              <div role="status" class="skeleton line" style="width: 45%; height: 2rem"></div>
+              <div role="status" class="skeleton line" style="width: 75%"></div>
             </article>
           </template>
           <template v-else>
-            <article v-for="tile in statTiles" :key="tile.key" class="card vstack" data-widget="number">
-              <header><h4>{{ tile.label }}</h4></header>
-              <p data-widget-value>{{ tile.value }}</p>
-              <p data-widget-change>{{ tile.hint }}</p>
+            <article v-for="tile in statTiles" :key="tile.key" class="card kpi-card">
+              <span class="kpi-label truncate">{{ tile.label }}</span>
+              <p class="kpi-value">{{ tile.value }}</p>
+              <span class="kpi-hint truncate">{{ tile.hint }}</span>
             </article>
           </template>
         </div>
 
-        <!-- Charts Row -->
-        <div v-if="!error" class="row">
-          <div class="col-7">
-            <article class="card vstack h-full" data-widget="chart">
-              <header>
-                <h4>{{ $t('agentAnalytics.transferTrends') }}</h4>
-                <small>{{ $t('agentAnalytics.transfersOverTime') }}</small>
-              </header>
-              <div v-if="isLoading" role="status" class="skeleton box" aria-busy="true"></div>
-              <LineChart
-                v-else-if="trendLabels.length > 0"
-                :labels="trendLabels"
-                :series="trendSeries"
-                :caption="$t('agentAnalytics.transferTrends')"
-              />
-              <div v-else data-empty>
-                <strong>{{ $t('agentAnalytics.noTransfersTitle') }}</strong>
-                <span>{{ $t('agentAnalytics.noTransfersHint') }}</span>
+        <!-- Asymmetric 8/4 Charts Bento -->
+        <div v-if="!error && (activeTab === 'overview' || !isAllAgents)" class="bento-split">
+          <article class="card vstack gap-3">
+            <header class="hstack items-center justify-between gap-2">
+              <div>
+                <h4 class="m-0">{{ $t('agentAnalytics.transferTrends') }}</h4>
               </div>
-            </article>
-          </div>
+            </header>
+            <div v-if="isLoading" role="status" class="skeleton box" aria-busy="true"></div>
+            <LineChart
+              v-else-if="trendLabels.length > 0"
+              :labels="trendLabels"
+              :series="trendSeries"
+              :caption="$t('agentAnalytics.transferTrends')"
+            />
+            <p v-else class="text-light">{{ $t('agentAnalytics.noDataAvailable') }}</p>
+          </article>
 
-          <div class="col-5">
-            <article class="card vstack h-full" data-widget="chart">
-              <header>
-                <h4>{{ $t('agentAnalytics.conversationSources') }}</h4>
-                <small>{{ $t('agentAnalytics.howConversationsInitiated') }}</small>
-              </header>
-              <div v-if="isLoading" role="status" class="skeleton box" aria-busy="true"></div>
-              <PieChart
-                v-else-if="sourceLabels.length > 0"
-                donut
-                :labels="sourceLabels"
-                :values="sourceValues"
-                :caption="$t('agentAnalytics.conversationSources')"
-              />
-              <div v-else data-empty>
-                <strong>{{ $t('agentAnalytics.noTransfersTitle') }}</strong>
-                <span>{{ $t('agentAnalytics.noSourcesHint') }}</span>
-              </div>
-            </article>
-          </div>
+          <article class="card vstack gap-3">
+            <header class="hstack items-center justify-between gap-2">
+              <h4 class="m-0">{{ $t('agentAnalytics.conversationSources') }}</h4>
+            </header>
+            <div v-if="isLoading" role="status" class="skeleton box" aria-busy="true"></div>
+            <PieChart
+              v-else-if="sourceLabels.length > 0"
+              donut
+              :labels="sourceLabels"
+              :values="sourceValues"
+              :caption="$t('agentAnalytics.conversationSources')"
+            />
+            <p v-else class="text-light">{{ $t('agentAnalytics.noDataAvailable') }}</p>
+          </article>
         </div>
 
-        <!-- Agent Comparison (Admin/Manager only, when viewing all agents) -->
-        <article v-if="!error && isAllAgents" class="card vstack" data-widget="chart">
-          <header>
-            <h4>{{ $t('agentAnalytics.agentComparison') }}</h4>
-            <small>{{ $t('agentAnalytics.performanceComparison') }}</small>
-          </header>
-          <div v-if="isLoading" role="status" class="skeleton box" aria-busy="true"></div>
-          <BarChart
-            v-else-if="comparisonLabels.length > 0"
-            :labels="comparisonLabels"
-            :series="comparisonSeries"
-            :caption="$t('agentAnalytics.agentComparison')"
-          />
-          <div v-else data-empty><strong>{{ $t('agentAnalytics.noAgentsFound') }}</strong></div>
-        </article>
+        <!-- Agent Comparison & Interactive Scorecard (Admin/Manager, All Agents) -->
+        <template v-if="!error && isAllAgents">
+          <article v-if="activeTab === 'overview'" class="card vstack gap-3">
+            <header class="hstack items-center justify-between gap-2">
+              <h4 class="m-0">{{ $t('agentAnalytics.agentComparison') }}</h4>
+            </header>
+            <div v-if="isLoading" role="status" class="skeleton box" aria-busy="true"></div>
+            <BarChart
+              v-else-if="comparisonLabels.length > 0"
+              :labels="comparisonLabels"
+              :series="comparisonSeries"
+              :caption="$t('agentAnalytics.agentComparison')"
+            />
+            <p v-else class="text-light">{{ $t('agentAnalytics.noAgentsFound') }}</p>
+          </article>
+
+          <article v-if="!isLoading && (analytics?.agent_stats?.length ?? 0) > 0" class="card vstack gap-3">
+            <header class="hstack items-center justify-between gap-2">
+              <h4 class="m-0">{{ $t('agentAnalytics.agentComparison') }} — {{ $t('common.details', 'Details') }}</h4>
+              <small class="text-light">{{ analytics?.agent_stats?.length }}</small>
+            </header>
+            <div class="table scroll-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ $t('agentAnalytics.selectAgent') }}</th>
+                    <th>{{ $t('userMenu.status') }}</th>
+                    <th class="align-right">{{ $t('agentAnalytics.transfersHandled') }}</th>
+                    <th class="align-right">{{ $t('agentAnalytics.activeConversations') }}</th>
+                    <th class="align-right">{{ $t('agentAnalytics.messagesSent') }}</th>
+                    <th class="align-right">{{ $t('agentAnalytics.avgResolutionTime') }}</th>
+                    <th class="align-right">{{ $t('agentAnalytics.breakTime') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="agent in analytics?.agent_stats"
+                    :key="agent.agent_id"
+                    class="scorecard-row"
+                    @click="selectedAgentId = agent.agent_id"
+                  >
+                    <td>
+                      <span class="hstack items-center gap-2">
+                        <figure data-variant="avatar" class="small" style="width: 1.75rem; height: 1.75rem; font-size: 0.7rem;">
+                          <abbr>{{ (agent.agent_name || 'U').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() }}</abbr>
+                        </figure>
+                        <strong>{{ agent.agent_name || 'Unknown' }}</strong>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge" :data-pill="agent.is_available ? 'green' : 'grey'">
+                        {{ agent.is_available ? $t('userMenu.available') : $t('userMenu.away') }}
+                      </span>
+                    </td>
+                    <td class="align-right">{{ agent.transfers_handled }}</td>
+                    <td class="align-right">{{ agent.active_transfers }}</td>
+                    <td class="align-right">{{ agent.messages_sent }}</td>
+                    <td class="align-right">{{ formatMinutes(agent.avg_resolution_mins) }}</td>
+                    <td class="align-right">{{ formatMinutes(agent.total_break_time_mins) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </template>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.kpi-icon-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-small);
+  background-color: var(--faint);
+  border: 1px solid var(--border);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.scorecard-row {
+  cursor: pointer;
+}
+</style>

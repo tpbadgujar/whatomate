@@ -36,6 +36,11 @@ frontend/dist/
 frontend/.env.local
 frontend/.env.*.local
 
+# Admin Frontend (Angular)
+admin-frontend/node_modules/
+admin-frontend/dist/
+admin-frontend/.angular/
+
 # Playwright
 frontend/playwright-report/
 frontend/test-results/

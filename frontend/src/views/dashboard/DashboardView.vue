@@ -657,7 +657,7 @@ onMounted(() => {
   <div class="flex flex-col h-full">
     <PageHeader :title="$t('dashboard.title')" :description="$t('dashboard.subtitle')" :icon="LayoutDashboard">
       <template #actions>
-        <button v-if="canCreateWidget" type="button" class="outline small" @click="openAddWidgetDialog">
+        <button v-if="canCreateWidget" type="button" class="small" @click="openAddWidgetDialog">
           <Plus :size="16" />
           {{ $t('dashboard.addWidget') }}
         </button>

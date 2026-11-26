@@ -15,14 +15,15 @@ defineProps<{
 </script>
 
 <template>
-  <header class="hstack items-center gap-4" data-page-header>
-    <RouterLink v-if="backLink" :to="backLink" class="button ghost icon" :title="$t('common.back', 'Back')" :aria-label="$t('common.back', 'Back')">
-      <ArrowLeft />
-    </RouterLink>
-    <span v-if="icon" data-page-icon aria-hidden="true"><component :is="icon" :size="16" /></span>
-    <div class="flex-1 min-w-0">
-      <h1>{{ title }}</h1>
-      <p v-if="description" data-page-description>{{ description }}</p>
+  <header class="hstack items-end justify-between gap-4 flex-wrap" data-page-header>
+    <div class="hstack items-center gap-3 flex-1 min-w-0">
+      <RouterLink v-if="backLink" :to="backLink" class="button ghost icon small" :title="$t('common.back', 'Back')" :aria-label="$t('common.back', 'Back')">
+        <ArrowLeft :size="16" />
+      </RouterLink>
+      <div class="min-w-0">
+        <p v-if="description" class="truncate" data-page-description>{{ description }}</p>
+        <h1 class="truncate">{{ title }}</h1>
+      </div>
     </div>
     <div v-if="$slots.actions" class="hstack items-center" data-page-actions>
       <slot name="actions" />

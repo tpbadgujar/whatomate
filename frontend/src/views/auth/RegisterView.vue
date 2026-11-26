@@ -61,11 +61,32 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <main class="flex items-center justify-center h-screen scroll-y p-4">
-    <div class="auth-panel">
+  <main class="auth-split">
+    <aside class="auth-showcase" aria-hidden="true">
+      <div class="hstack items-center gap-3">
+        <span class="showcase-logo-mark">
+          <MessageSquare :size="18" />
+        </span>
+        <strong style="font-size: 1rem; letter-spacing: -0.01em;">Whatomate</strong>
+      </div>
+
+      <div class="vstack gap-4" style="max-width: 28rem;">
+        <h1 style="margin: 0; font-size: 1.75rem; line-height: 1.2; font-weight: 600; color: #f1f3f1;">
+          {{ $t('auth.createAccount') }}
+        </h1>
+        <p style="margin: 0; font-size: 0.9375rem; line-height: 1.5; color: #9aa8a1;">
+          {{ $t('auth.createAccountDesc') }}
+        </p>
+      </div>
+    </aside>
+
+    <section class="auth-form-pane">
+      <div class="auth-panel">
         <article class="card">
           <header class="vstack gap-2 items-center align-center mb-6">
-            <MessageSquare :size="32" />
+            <span data-page-icon style="width: 2.5rem; height: 2.5rem;">
+              <MessageSquare :size="20" />
+            </span>
             <h2>{{ $t('auth.createAccount') }}</h2>
             <p class="text-light">{{ $t('auth.createAccountDesc') }}</p>
           </header>
@@ -133,6 +154,20 @@ const handleRegister = async () => {
             </p>
           </form>
         </article>
-    </div>
+      </div>
+    </section>
   </main>
 </template>
+
+<style scoped>
+.showcase-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-medium);
+  background-color: #10b981;
+  color: #ffffff;
+}
+</style>

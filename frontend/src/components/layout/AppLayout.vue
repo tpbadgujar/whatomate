@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
-import { MessageSquare, Menu } from '@/lib/icons'
+import { useColorMode } from '@/composables/useColorMode'
+import { MessageSquare, Menu, Search, ChevronsLeft, ChevronsRight, Sun, Moon } from '@/lib/icons'
 import { wsService } from '@/services/websocket'
 import { authService } from '@/services/api'
 import OrganizationSwitcher from './OrganizationSwitcher.vue'
 import UserMenu from './UserMenu.vue'
-import SettingsNav from './SettingsNav.vue'
+import CommandPalette from './CommandPalette.vue'
 import ActiveCallPanel from '@/components/calling/ActiveCallPanel.vue'
 import { ScrollToTop } from '@/components/shared'
 import { navigationSections, type NavSection } from './navigation'
@@ -18,12 +19,13 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
-const layout = ref<HTMLElement | null>(null)
+const { isDark, setColorMode } = useColorMode()
+const commandPalette = ref<InstanceType<typeof CommandPalette> | null>(null)
+const mobileNavOpen = ref(false)
+const isCollapsed = ref(false)
 
-// Refresh user data and connect WebSocket on mount
 onMounted(() => {
   if (authStore.isAuthenticated) {
-    // Fetch fresh permissions in background (non-destructive — interceptor handles 401)
     authStore.refreshUserData()
 
     wsService.connect(async () => {
@@ -71,7 +73,6 @@ function filterItems(items: NavSection['items']) {
     })
 }
 
-// Filter navigation sections based on user permissions
 const navSections = computed(() => {
   return navigationSections
     .map(section => ({
@@ -81,30 +82,15 @@ const navSections = computed(() => {
     .filter(section => section.items.length > 0)
 })
 
-// Settings pages carry their own grouped menu (SettingsNav) instead of a sidebar sub-list.
-const isSettings = computed(() => route.path === '/settings' || route.path.startsWith('/settings/'))
-
 const mainSections = computed(() => navSections.value.filter(s => !s.pinBottom))
 const bottomSections = computed(() => navSections.value.filter(s => s.pinBottom))
 
-// On phones the sidebar is an overlay: data-sidebar-open means it is shown. Close it after navigating.
-const sidebarOpen = ref(false)
-let observer: MutationObserver | null = null
-onMounted(() => {
-  if (layout.value) {
-    sidebarOpen.value = layout.value.hasAttribute('data-sidebar-open')
-    observer = new MutationObserver(() => {
-      sidebarOpen.value = layout.value?.hasAttribute('data-sidebar-open') ?? false
-    })
-    observer.observe(layout.value, { attributes: true, attributeFilter: ['data-sidebar-open'] })
-  }
-})
-onUnmounted(() => observer?.disconnect())
+const closeMobileNav = () => {
+  mobileNavOpen.value = false
+}
 
-const closeMobileSidebar = () => {
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    layout.value?.removeAttribute('data-sidebar-open')
-  }
+const toggleQuickTheme = () => {
+  setColorMode(isDark.value ? 'light' : 'dark')
 }
 
 const handleLogout = async () => {
@@ -114,111 +100,154 @@ const handleLogout = async () => {
 </script>
 
 <template>
-  <div ref="layout" data-sidebar-layout>
-    <!-- Skip link for accessibility -->
+  <div
+    class="saas-shell"
+    :data-collapsed="isCollapsed ? 'true' : undefined"
+    :data-mobile-nav="mobileNavOpen ? 'open' : undefined"
+  >
     <a href="#main-content" class="skip-link">{{ $t('nav.skipToMain') }}</a>
 
-    <!-- Phones only: slim top bar with the menu toggle -->
-    <header data-sidebar-header>
-      <button type="button" data-sidebar-toggle :aria-label="t('nav.toggleMenu')" :aria-expanded="sidebarOpen">
-        <Menu :size="16" aria-hidden="true" />
-      </button>
-      <RouterLink to="/" class="hstack gap-2">
-        <MessageSquare :size="16" aria-hidden="true" />
-        <strong>Whatomate</strong>
-      </RouterLink>
-    </header>
-
-    <aside data-sidebar :aria-label="t('nav.sidebar')">
-      <!-- Current organization (logo + name); opens the organization menu -->
-      <header>
-        <OrganizationSwitcher />
+    <!-- Left Sidebar -->
+    <aside class="saas-sidebar" :aria-label="t('nav.sidebar')">
+      <header class="saas-sidebar-header">
+        <div class="hstack items-center gap-2 min-w-0 flex-1">
+          <span class="saas-brand-tile" aria-hidden="true">
+            <MessageSquare :size="16" />
+          </span>
+          <div v-if="!isCollapsed" class="min-w-0 flex-1">
+            <OrganizationSwitcher />
+          </div>
+        </div>
+        <button
+          type="button"
+          class="ghost icon small"
+          :aria-label="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+          @click="isCollapsed = !isCollapsed"
+        >
+          <ChevronsRight v-if="isCollapsed" :size="15" aria-hidden="true" />
+          <ChevronsLeft v-else :size="15" aria-hidden="true" />
+        </button>
       </header>
 
-      <nav :aria-label="t('nav.mainNavigation')">
-        <ul>
-          <template v-for="section in mainSections" :key="section.label">
-            <li v-if="section.label" role="presentation">
-              <small class="text-lighter">{{ $t(section.label) }}</small>
-            </li>
+      <nav class="saas-sidebar-nav" :aria-label="t('nav.mainNavigation')">
+        <template v-for="section in mainSections" :key="section.label">
+          <div v-if="section.label && !isCollapsed" class="saas-nav-section-label">
+            {{ $t(section.label) }}
+          </div>
+          <ul class="saas-nav-list">
             <li v-for="item in section.items" :key="item.path">
               <RouterLink
                 :to="item.path"
+                class="saas-nav-link"
                 :aria-current="item.active ? 'page' : undefined"
-                @click="closeMobileSidebar"
+                :title="isCollapsed ? $t(item.name) : undefined"
+                @click="closeMobileNav"
               >
-                <component :is="item.icon" :size="16" aria-hidden="true" />
-                <span>{{ $t(item.name) }}</span>
+                <component :is="item.icon" :size="17" class="shrink-0" aria-hidden="true" />
+                <span v-if="!isCollapsed" class="truncate">{{ $t(item.name) }}</span>
               </RouterLink>
 
-              <!-- Submenu items -->
-              <ul v-if="item.children && item.active && item.path !== '/chatbot'">
+              <ul v-if="item.children && item.active && !isCollapsed" class="saas-subnav-list">
                 <li v-for="child in item.children" :key="child.path">
                   <RouterLink
                     :to="child.path"
                     :aria-current="route.path === child.path ? 'page' : undefined"
-                    @click="closeMobileSidebar"
+                    @click="closeMobileNav"
                   >
-                    <component :is="child.icon" :size="14" aria-hidden="true" />
-                    <span>{{ $t(child.name) }}</span>
+                    <component :is="child.icon" :size="14" class="shrink-0" aria-hidden="true" />
+                    <span class="truncate">{{ $t(child.name) }}</span>
                   </RouterLink>
                 </li>
               </ul>
             </li>
-          </template>
-        </ul>
+          </ul>
+        </template>
+
+        <template v-if="bottomSections.length > 0">
+          <div v-if="!isCollapsed" class="saas-nav-section-label" style="margin-top: 0.75rem;">
+            {{ $t('nav.settings') }}
+          </div>
+          <ul class="saas-nav-list">
+            <template v-for="section in bottomSections" :key="section.label">
+              <li v-for="item in section.items" :key="item.path">
+                <RouterLink
+                  :to="item.path"
+                  class="saas-nav-link"
+                  :aria-current="item.active ? 'page' : undefined"
+                  :title="isCollapsed ? $t(item.name) : undefined"
+                  @click="closeMobileNav"
+                >
+                  <component :is="item.icon" :size="17" class="shrink-0" aria-hidden="true" />
+                  <span v-if="!isCollapsed" class="truncate">{{ $t(item.name) }}</span>
+                </RouterLink>
+
+                <ul v-if="item.children && item.active && !isCollapsed" class="saas-subnav-list">
+                  <li v-for="child in item.children" :key="child.path">
+                    <RouterLink
+                      :to="child.path"
+                      :aria-current="route.path === child.path ? 'page' : undefined"
+                      @click="closeMobileNav"
+                    >
+                      <component :is="child.icon" :size="14" class="shrink-0" aria-hidden="true" />
+                      <span class="truncate">{{ $t(child.name) }}</span>
+                    </RouterLink>
+                  </li>
+                </ul>
+              </li>
+            </template>
+          </ul>
+        </template>
       </nav>
-
-      <!-- Bottom-pinned navigation (Settings) -->
-      <nav v-if="bottomSections.length > 0" data-pinned :aria-label="t('nav.secondaryNavigation')">
-        <ul>
-          <template v-for="section in bottomSections" :key="section.label">
-            <li v-for="item in section.items" :key="item.path">
-              <RouterLink
-                :to="item.path"
-                :aria-current="item.active ? 'page' : undefined"
-                @click="closeMobileSidebar"
-              >
-                <component :is="item.icon" :size="16" aria-hidden="true" />
-                <span>{{ $t(item.name) }}</span>
-              </RouterLink>
-
-              <ul v-if="item.children && item.active && item.path !== '/settings'">
-                <li v-for="child in item.children" :key="child.path">
-                  <RouterLink
-                    :to="child.path"
-                    :aria-current="route.path === child.path ? 'page' : undefined"
-                    @click="closeMobileSidebar"
-                  >
-                    <component :is="child.icon" :size="14" aria-hidden="true" />
-                    <span>{{ $t(child.name) }}</span>
-                  </RouterLink>
-                </li>
-              </ul>
-            </li>
-          </template>
-        </ul>
-      </nav>
-
-      <footer>
-        <UserMenu @logout="handleLogout" />
-      </footer>
     </aside>
 
-    <!-- Main content -->
-    <main id="main-content" class="scroll-y min-h-0">
-      <div :class="isSettings ? 'settings-shell' : 'h-full'">
-        <SettingsNav v-if="isSettings" />
-        <div class="h-full min-h-0 min-w-0">
-          <RouterView v-slot="{ Component, route: viewRoute }">
-            <Transition name="page" mode="out-in">
-              <component :is="Component" :key="viewRoute.meta.stableKey ? String(viewRoute.name) : viewRoute.path" />
-            </Transition>
-          </RouterView>
-        </div>
+    <!-- Top Header Bar -->
+    <header class="saas-topbar">
+      <div class="hstack items-center gap-3 flex-1 min-w-0">
+        <button
+          type="button"
+          class="ghost icon small saas-mobile-toggle"
+          :aria-label="t('nav.toggleMenu')"
+          :aria-expanded="mobileNavOpen"
+          @click="mobileNavOpen = !mobileNavOpen"
+        >
+          <Menu :size="16" aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
+          class="saas-search-bar hstack items-center"
+          @click="commandPalette?.open()"
+        >
+          <Search :size="15" aria-hidden="true" />
+          <span class="truncate">{{ $t('common.search') }}...</span>
+        </button>
       </div>
+
+      <div class="saas-topbar-right">
+        <button
+          type="button"
+          class="outline icon small"
+          :aria-label="$t('userMenu.colorTheme')"
+          :title="$t('userMenu.colorTheme')"
+          @click="toggleQuickTheme"
+        >
+          <Sun v-if="isDark" :size="15" aria-hidden="true" />
+          <Moon v-else :size="15" aria-hidden="true" />
+        </button>
+        <UserMenu @logout="handleLogout" />
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="saas-main">
+      <RouterView v-slot="{ Component, route: viewRoute }">
+        <Transition name="page" mode="out-in">
+          <component :is="Component" :key="viewRoute.meta.stableKey ? String(viewRoute.name) : viewRoute.path" />
+        </Transition>
+      </RouterView>
       <ActiveCallPanel />
       <ScrollToTop />
+      <CommandPalette ref="commandPalette" />
     </main>
   </div>
 </template>

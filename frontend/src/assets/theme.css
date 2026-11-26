@@ -1,126 +1,107 @@
 /*
- * App theme on top of vendored Oat: the "graphite + green" palette, IBM Plex
- * type and the app's sizes.
- *
- * Look: neutral graphite surfaces with a slight green bias, one green brand
- * colour and flat cards (no gradients, glows or hover lifts). Colours are
- * light-dark(light, dark).
- *
- * Sizing: html { font-size: 14px }, so 1rem = 14px; control sizes below are
- * carried over from the pre-Oat UI. Oat's space scale is left at its defaults.
- *
- * This layer is declared after Oat's layers (theme, base, components,
- * animations, utilities), so it wins over Oat's token definitions without
- * !important. It is loaded before layout.css, so `layout` stays last.
+ * Whatomate — Clean Airy Emerald SaaS Design System
+ * Light-first (#f9fafb canvas, #ffffff cards, #e5e7eb hairline borders),
+ * Emerald-green (#10b981 / #059669) primary actions & active indicators,
+ * generous whitespace, and tabular numerals.
  */
 @layer theme-overrides {
   html {
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-variant-numeric: tabular-nums;
   }
 
-  :is(h1, h2, h3, h4, h5, h6) { font-weight: 600; }
-
-  /* Digits that line up: tables, times, counters. */
-  :is(td, time, [data-widget-value], [data-unread]) { font-variant-numeric: tabular-nums; }
+  :is(h1, h2, h3, h4, h5, h6) {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
 
   :root {
-    /* Type: IBM Plex Sans throughout. */
-    --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    /* Emerald Primary */
+    --primary: light-dark(#10b981, #10b981);
+    --primary-ink: light-dark(#059669, #34d399);
+    --primary-foreground: #ffffff;
+    --ring: light-dark(#10b981, #34d399);
 
-    /* Fixed (non-fluid) type scale: body 1rem, controls/tables 0.875rem,
-       small/badges 0.75rem. h4 is the small panel-title size. */
+    /* Airy Neutral Ramp */
+    --background: light-dark(#f9fafb, #0b0f0e);
+    --foreground: light-dark(#111827, #f3f4f6);
+    --card: light-dark(#ffffff, #121715);
+    --card-foreground: light-dark(#111827, #f3f4f6);
+    --secondary: light-dark(#f3f4f6, #1b2220);
+    --secondary-foreground: light-dark(#1f2937, #e5e7eb);
+    --muted: light-dark(#f3f4f6, #1b2220);
+    --muted-foreground: light-dark(#6b7280, #9ca3af);
+    --faint: light-dark(#f9fafb, #151b19);
+    --accent: light-dark(#f3f4f6, #1b2220);
+    --danger: light-dark(#ef4444, #f87171);
+    --success: light-dark(#10b981, #34d399);
+    --warning: light-dark(#f59e0b, #fbbf24);
+    --border: light-dark(#e5e7eb, #1f2926);
+    --input: light-dark(#d1d5db, #2d3a36);
+
+    /* Font stack */
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    /* Type scale */
     --text-1: 1.875rem;
     --text-2: 1.5rem;
-    --text-3: 1.5rem;
+    --text-3: 1.25rem;
     --text-4: 0.875rem;
-    --text-5: 1.125rem;
-    --text-6: 1rem;
+    --text-5: 1.0625rem;
+    --text-6: 0.9375rem;
     --text-7: 0.875rem;
     --text-8: 0.75rem;
 
-    --sidebar-width: 16rem;
+    /* Soft, clean SaaS radii */
+    --radius-small: 0.375rem;
+    --radius-medium: 0.5rem;
+    --radius-large: 0.75rem;
+
+    --sidebar-width: 15.5rem;
     --grid-gap: 1rem;
 
-    /* Palette */
-    --background: light-dark(#f4f5f4, #121313);
-    --foreground: light-dark(#1a1c1b, #e8eae9);
-    --card: light-dark(#ffffff, #1a1c1b);
-    --card-foreground: light-dark(#1a1c1b, #e8eae9);
-    --primary: light-dark(#137a5a, #3ccf8e);
-    --primary-foreground: light-dark(#ffffff, #06261a);
-    --ring: light-dark(#137a5a, #3ccf8e);
-    --secondary: light-dark(#e9ebea, #252827);
-    --secondary-foreground: light-dark(#1a1c1b, #e8eae9);
-    --muted: light-dark(#e9ebea, #252827);
-    --muted-foreground: light-dark(#5b615e, #9ca29f);
-    --faint: light-dark(#f8f9f8, #161817);
-    --faint-foreground: light-dark(#7c8380, #737a77);
-    --accent: light-dark(#eef0ef, #252827);
-    --border: light-dark(#dfe2e0, #2a2d2c);
-    --input: light-dark(#cfd3d1, #373b39);
-    --danger: light-dark(#c62828, #f2867a);
-    --success: light-dark(#137a5a, #3ccf8e);
-    --warning: light-dark(#8f5400, #f0b04a);
-
-    --radius-small: 4px;
-    --radius-medium: 6px;
-    --radius-large: 10px;
-    --shadow-small: 0 1px 2px light-dark(rgb(26 28 27 / 0.05), rgb(0 0 0 / 0.3));
-
-    /* Sidebar rail: white in light mode, near-black in dark mode;
-       a green bar marks the current page. */
-    --rail: light-dark(#ffffff, #0d0f0e);
-    --rail-border: light-dark(#dfe2e0, #2a2d2c);
-    --rail-ink: light-dark(#4a504d, #b4bab7);
-    --rail-ink-strong: light-dark(#1a1c1b, #f5f7f6);
-    --rail-ink-faint: light-dark(#6f7673, #8a918e);
-    --rail-hover: light-dark(rgb(26 28 27 / 0.05), rgb(255 255 255 / 0.06));
-    --rail-active: light-dark(rgb(19 122 90 / 0.1), rgb(60 207 142 / 0.12));
-    --rail-signal: light-dark(#137a5a, #3ccf8e);
-
-    /* Categorical palette for grouped/pie charts. */
-    --chart-1: light-dark(#137a5a, #3ccf8e);
-    --chart-2: light-dark(#2a63a8, #82b4ec);
-    --chart-3: light-dark(#b86e00, #f0b04a);
-    --chart-4: light-dark(#6a4bb3, #b19ded);
-    --chart-5: light-dark(#b4323a, #f08a8f);
-    --chart-6: light-dark(#0f7a8f, #6ccde6);
-    --chart-7: light-dark(#a8336f, #ee8fc0);
-    --chart-8: light-dark(#6f7414, #cfd46a);
+    /* Chart palette */
+    --chart-1: light-dark(#10b981, #34d399);
+    --chart-2: light-dark(#3b82f6, #60a5fa);
+    --chart-3: light-dark(#f59e0b, #fbbf24);
+    --chart-4: light-dark(#8b5cf6, #a78bfa);
+    --chart-5: light-dark(#ef4444, #f87171);
+    --chart-6: light-dark(#06b6d4, #22d3ee);
+    --chart-7: light-dark(#ec4899, #f472b6);
+    --chart-8: light-dark(#84cc16, #a3e635);
   }
 
-  .card { box-shadow: var(--shadow-small); }
-  /* Card titles: a section label, not a headline. */
-  .card > header :is(h3, div > h3) { font-size: 1.0625rem; line-height: 1.5rem; letter-spacing: normal; }
-  /* Detail/edit pages: section titles match list-page card titles; collapsible
-     sections read as the same level, not larger. */
-  :is([data-detail-page] .card, .side-panel) :is(h3, h4):first-child { font-size: 1.0625rem; font-weight: 600; line-height: 1.5rem; }
-  :is([data-detail-page] .card, .side-panel) details > summary { font-size: 0.9375rem; font-weight: 600; }
+  :is(table, td, th, time, .kpi-value, [data-widget-value], [data-bubble-time]) {
+    font-variant-numeric: tabular-nums;
+  }
 
-  /* Buttons: h-9 px-4 text-sm; small h-8; large h-11; icon squares. min-height +
-     border-compensated padding keeps the height but lets wrapped content grow.
-     Buttons Oat styles as something else (tabs, menu items, badge 'x') keep theirs;
-     zero specificity so app rules below still win. */
+  .card > header :is(h3, div > h3) { line-height: 1.2; letter-spacing: -0.015em; }
+  [data-detail-page] .card h3 { font-size: 0.875rem; font-weight: 600; line-height: 1.2; letter-spacing: normal; }
+
+  /* Buttons */
   :where(:is(button, [type=submit], [type=reset], [type=button], a.button):not([role=tab], [role=menuitem], .badge button, [data-sidebar-toggle])) {
     min-height: 2.25rem;
-    padding: calc(0.5rem - 1px) 1rem;
+    padding: calc(0.5rem - 1px) 0.875rem;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
     line-height: 1.25rem;
+    border-radius: var(--radius-medium);
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
 
     &.small {
       min-height: 2rem;
-      padding: calc(0.5rem - 1px) 0.75rem;
+      padding: calc(0.375rem - 1px) 0.75rem;
       font-size: 0.75rem;
       line-height: 1rem;
     }
     &.large {
       height: auto;
       min-height: 2.75rem;
-      padding: calc(0.75rem - 1px) 2rem;
+      padding: calc(0.75rem - 1px) 1.5rem;
       font-size: 0.875rem;
     }
     &.icon {
@@ -134,19 +115,20 @@
     }
   }
 
-  /* Form controls: input h-10, select h-9, textarea min 80px. */
+  /* Form controls */
   :where(input:not([type=checkbox], [type=radio], [type=range], [type=file], [type=color], [type=submit], [type=reset], [type=button])) {
-    height: 2.5rem;
+    height: 2.375rem;
     line-height: 1.25rem;
-  }
-  /* Fields sit on white (card) rather than the grey page colour. */
-  :where(input:not([type=checkbox], [type=radio], [type=range], [type=file], [type=color], [type=submit], [type=reset], [type=button]), textarea, select) {
+    border-radius: var(--radius-medium);
     background-color: var(--card);
+    border-color: var(--border);
   }
   select:not([multiple], [size]) {
-    height: 2.25rem;
+    height: 2.375rem;
     padding-block: 0;
     border-radius: var(--radius-medium);
+    background-color: var(--card);
+    border-color: var(--border);
   }
   textarea {
     min-height: 80px;
@@ -155,7 +137,6 @@
     border-radius: var(--radius-medium);
   }
 
-  /* Switch: h-5 w-9, border-2 transparent, h-4 w-4 thumb moving 1rem. */
   input[type=checkbox][role=switch] {
     --switch-inset: 0px;
     --switch-thumb: 1rem;
@@ -165,184 +146,111 @@
     &:checked::before { transform: translateY(-50%) translateX(1rem); }
   }
 
-  /* Badge: px-2.5 py-0.5 text-xs (1rem line), 1px border. */
-  .badge { padding: 0.125rem 0.625rem; line-height: 1rem; }
+  /* Badges */
+  .badge {
+    padding: 0.125rem 0.5rem;
+    line-height: 1rem;
+    border-radius: var(--radius-small);
+    font-weight: 500;
+  }
   .badge:not(.outline) { border: 1px solid transparent; }
 
-  /* Table: header h-10 px-2, cell p-2. */
-  th { height: 2.5rem; padding: 0 0.5rem; font-size: 0.8125rem; font-weight: 500; color: var(--muted-foreground); }
-  thead th { background-color: var(--faint); }
-  td { padding: 0.5rem; }
-  th.sticky-top { background-color: var(--card); }
-
-  /* Tabs: underlined, on a bottom rule (not a segmented pill). */
-  [role="tablist"] {
-    gap: 0.25rem;
-    padding: 0;
+  /* Clean Airy Tables (matching reference) */
+  th {
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
     background-color: transparent;
-    border-radius: 0;
-    box-shadow: inset 0 -1px 0 var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th.sticky-top { background-color: var(--card); }
+  tbody tr {
+    transition: background-color 100ms ease;
+    &:hover { background-color: var(--faint); }
+  }
+
+  /* Tabs */
+  [role="tablist"] {
+    gap: 0.125rem;
+    background-color: var(--secondary);
+    padding: 0.25rem;
+    border-radius: var(--radius-medium);
   }
   [role="tab"] {
-    padding: 0.5rem 0.75rem;
+    padding: 0.25rem 0.75rem;
     line-height: 1.25rem;
-    color: var(--muted-foreground);
-    border-radius: 0;
-    &:hover { color: var(--foreground); }
-    &[aria-selected="true"] {
-      color: var(--foreground);
-      background-color: transparent;
-      box-shadow: inset 0 -2px 0 var(--primary);
-    }
+    border-radius: var(--radius-small);
+    font-weight: 500;
+    font-size: 0.8125rem;
   }
 
   [role="status"].skeleton,
-  ot-dropdown [popover]:not(.ot-tooltip) { border-radius: var(--radius-medium); }
+  ot-dropdown [popover]:not(.ot-tooltip) {
+    border-radius: var(--radius-large);
+    border-color: var(--border);
+    box-shadow: 0 10px 25px -5px light-dark(rgb(17 24 39 / 0.08), rgb(0 0 0 / 0.5));
+  }
 
-  /* Dialog: p-6 with gap-4 between header / body / footer, title text-lg. */
   dialog {
+    border-radius: var(--radius-large);
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    box-shadow: 0 20px 40px -12px light-dark(rgb(17 24 39 / 0.14), rgb(0 0 0 / 0.6));
     > header, > form > header { gap: 0.375rem; }
     :is(&, & > form) > :is(p, div, section) { padding-block: 1rem; }
     :is(&, & > form) > :is(p, div, section):last-child { padding-block-end: 1.5rem; }
-    > header :is(h2, h3) { font-size: 1.125rem; line-height: 1.2; letter-spacing: -0.01em; }
+    > header :is(h2, h3) { font-size: 1.125rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
   }
 
-  /* ------------------------------------------------------------------------
-     Sidebar rail
-     ------------------------------------------------------------------------ */
-  [data-sidebar-layout] > aside[data-sidebar] {
-    background-color: var(--rail);
-    color: var(--rail-ink);
-    border-inline-end-color: var(--rail-border);
-  }
-
-  [data-sidebar] nav {
-    a {
-      color: var(--rail-ink);
-      border-radius: var(--radius-small);
-      &:hover { color: var(--rail-ink-strong); background-color: var(--rail-hover); }
-      &[aria-current] {
-        color: var(--rail-ink-strong);
-        background-color: var(--rail-active);
-        box-shadow: inset 3px 0 0 var(--rail-signal);
-      }
-    }
-    ul ul a {
-      color: var(--rail-ink-faint);
-      &:hover { color: var(--rail-ink-strong); background-color: var(--rail-hover); }
-      &[aria-current] { color: var(--rail-ink-strong); background-color: var(--rail-hover); box-shadow: none; }
-    }
-    small {
-      display: block;
-      padding-block: var(--space-3) 0;
-      padding-inline: var(--space-3);
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--rail-ink-faint);
-    }
-  }
-  /* Organization and user menu triggers on the rail (not the menus they open). */
-  [data-sidebar] > :is(header, footer) ot-dropdown > button.ghost {
-    justify-content: flex-start;
-    text-align: start;
-    color: var(--rail-ink-strong);
-    --_hov: var(--rail-hover);
-    small.text-light { color: var(--rail-ink-faint); }
-    figure[data-variant="avatar"] { background-color: var(--rail-hover); color: var(--rail-ink-strong); }
-  }
-  /* User button in the sidebar footer: name over email, tight, email quiet (as designed). */
-  [data-sidebar] > footer ot-dropdown > button.ghost {
-    height: auto; padding: 0.375rem 0.5rem; gap: 0.625rem;
-    > .vstack { gap: 0; line-height: 1.25; }
-    > .vstack > span { font-size: 0.875rem; font-weight: 600; }
-    > .vstack > small { font-size: 0.75rem; font-weight: 400; }
-  }
-
-  /* Organization logo: sidebar trigger, menu rows and the settings preview. */
-  [data-org-logo] { width: 1.75rem; height: 1.75rem; flex-shrink: 0; object-fit: contain; border-radius: var(--radius-small); }
-  [data-org-logo="small"] { width: 1.25rem; height: 1.25rem; }
-  [data-org-logo="large"] { width: 4rem; height: 4rem; padding: 0.25rem; border: 1px solid var(--border); border-radius: var(--radius-large); }
-  [data-org-trigger] {
-    height: auto; padding: 0.375rem 0.5rem; gap: 0.625rem; justify-content: flex-start; text-align: start;
-    strong { font-size: 0.875rem; font-weight: 600; color: var(--rail-ink-strong); }
-  }
-
-  /* ------------------------------------------------------------------------
-     Page header: white bar over the grey page.
-     ------------------------------------------------------------------------ */
-  [data-page-header] {
-    height: 4rem;
-    flex-shrink: 0;
-    align-content: center; /* Oat's hstack wraps with align-content: flex-start */
-    padding: 0 1.5rem;
+  /* Clean white cards with soft 12px radius & whisper border */
+  .card {
     background-color: var(--card);
-    border-block-end: 1px solid var(--border);
-    h1 {
-      margin: 0;
-      font-size: 1.25rem;
-      line-height: 1.75rem;
-      font-weight: 600;
-    }
+    border: 1px solid var(--border);
+    border-radius: var(--radius-large);
+    box-shadow: 0 1px 2px light-dark(rgb(17 24 39 / 0.02), rgb(0 0 0 / 0.2));
+    padding: 1.25rem 1.5rem;
+    transition: border-color 140ms ease;
   }
-  [data-page-description] { margin: 0; font-size: 0.8125rem; line-height: 1.125rem; color: var(--muted-foreground); }
-  [data-page-icon] {
-    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
-    width: 2rem; height: 2rem; border-radius: var(--radius-medium);
-    color: var(--primary);
-    background-color: color-mix(in oklab, var(--primary) 13%, transparent);
-  }
-  [data-page-actions] {
-    gap: 0.5rem;
-    :is(button, a.button).small {
-      height: 2rem; padding: 0 0.75rem; gap: 0.5rem;
-      font-size: 0.75rem; line-height: 1rem;
-      &.icon { width: 2rem; padding: 0; }
-    }
-    button.small[aria-pressed="true"] {
-      --_hov: color-mix(in oklab, var(--primary) 22%, transparent);
-      background-color: color-mix(in oklab, var(--primary) 14%, transparent);
-      border-color: color-mix(in oklab, var(--primary) 40%, transparent);
-      color: var(--primary);
-    }
-    select { height: 2.25rem; width: 140px; padding-block: 0; padding-inline-start: 0.75rem; font-size: 0.875rem; }
-  }
-  [data-page-body] { padding: 1.5rem; }
 
-  /* Auth card (login/register): p-8, bold title. */
-  .auth-panel > .card { padding: 2rem; border-radius: var(--radius-large); }
-  .auth-panel h2 { font-weight: 600; }
-
-  /* ------------------------------------------------------------------------
-     Chat (approved exception to "no custom colours", chat screen only).
-     ------------------------------------------------------------------------ */
+  /* Chat skin */
   [data-chat-header] {
     background-color: var(--card);
     border-block-end: 1px solid var(--border);
   }
-  [data-chat-canvas] { background-color: light-dark(#ebedec, #0e0f0f); }
+  [data-chat-canvas] {
+    background-color: light-dark(#f3f4f6, #0b0f0e);
+  }
   .card[data-bubble] {
-    border: 0;
+    padding: 0.625rem 1rem;
     border-radius: var(--radius-large);
-    color: var(--foreground);
-    box-shadow: 0 1px 0 light-dark(rgb(26 28 27 / 0.08), rgb(0 0 0 / 0.4));
+    box-shadow: 0 1px 2px light-dark(rgb(17 24 39 / 0.04), rgb(0 0 0 / 0.2));
   }
   .card[data-bubble="incoming"] {
     background-color: var(--card);
-    border-end-start-radius: 3px;
+    color: var(--foreground);
+    border-color: var(--border);
+    border-end-start-radius: 0.25rem;
   }
   .card[data-bubble="outgoing"] {
-    background-color: light-dark(#dcf5e6, #1f4a35);
-    border-end-end-radius: 3px;
+    background-color: light-dark(#ecfdf5, #064e3b);
+    color: var(--foreground);
+    border-color: light-dark(#a7f3d0, #065f46);
+    border-end-end-radius: 0.25rem;
   }
   .badge[data-date-pill] {
     background-color: var(--card);
+    border: 1px solid var(--border);
     color: var(--muted-foreground);
-    font-weight: var(--font-medium);
-    border: 0;
+    font-weight: 500;
   }
-  /* In-bubble buttons / list options and reply quotes. */
   .card[data-bubble] :is(.badge, .button)[data-variant="secondary"] {
-    background-color: var(--card);
+    background-color: var(--faint);
     border: 1px solid var(--border);
   }
   .card[data-bubble] [data-reply-preview] blockquote {
@@ -350,18 +258,15 @@
     border-inline-start-color: var(--primary);
   }
 
-  /* ------------------------------------------------------------------------
-     Flow node colours (approved exception, flow editors only): one accent per
-     node type, shown as a coloured inline-start edge + tinted icon chip.
-     ------------------------------------------------------------------------ */
-  [data-node-type] { --node-accent: var(--muted-foreground); border-inline-start: 4px solid var(--node-accent); }
-  :is([data-node-type="greeting"], [data-node-type="start"]) { --node-accent: light-dark(#137a5a, #3ccf8e); }
+  /* Flow node colours */
+  [data-node-type] { --node-accent: var(--muted-foreground); border-inline-start: 3px solid var(--node-accent); }
+  :is([data-node-type="greeting"], [data-node-type="start"]) { --node-accent: light-dark(#059669, #34d399); }
   [data-node-type="message"] { --node-accent: light-dark(#0d9488, #2dd4bf); }
   :is([data-node-type="gather"], [data-node-type="prompt"]) { --node-accent: light-dark(#ea580c, #fb923c); }
-  :is([data-node-type="menu"], [data-node-type="buttons"]) { --node-accent: light-dark(#b45309, #fbbf24); }
+  :is([data-node-type="menu"], [data-node-type="buttons"]) { --node-accent: light-dark(#d97706, #fbbf24); }
   :is([data-node-type="http_callback"], [data-node-type="api_call"]) { --node-accent: light-dark(#2563eb, #60a5fa); }
   [data-node-type="webhook"] { --node-accent: light-dark(#0284c7, #38bdf8); }
-  [data-node-type="whatsapp_flow"] { --node-accent: light-dark(#4d7c0f, #a3e635); }
+  [data-node-type="whatsapp_flow"] { --node-accent: light-dark(#65a30d, #a3e635); }
   [data-node-type="transfer"] { --node-accent: light-dark(#7c3aed, #a78bfa); }
   [data-node-type="condition"] { --node-accent: light-dark(#db2777, #f472b6); }
   [data-node-type="goto_flow"] { --node-accent: light-dark(#4f46e5, #818cf8); }
@@ -370,290 +275,224 @@
   [data-node-icon] {
     display: inline-flex;
     padding: var(--space-1);
-    border-radius: var(--radius-medium);
+    border-radius: var(--radius-small);
     color: var(--node-accent);
-    background-color: color-mix(in oklab, var(--node-accent) 15%, transparent);
+    background-color: color-mix(in oklab, var(--node-accent) 12%, transparent);
   }
 
-  /* ------------------------------------------------------------------------
-     Dashboard
-     ------------------------------------------------------------------------ */
-  /* Widget cards: plain cards. The grid cell has a fixed height; content that
-     does not fit is clipped or scrolls. */
+  .auth-panel > .card { padding: 2rem; border-radius: var(--radius-large); }
+  .auth-panel h2 { font-weight: 600; letter-spacing: -0.02em; }
+
+  /* Editorial Page Header (matches reference: airy canvas header, no boxed bar) */
+  [data-page-header] {
+    flex-shrink: 0;
+    padding: 1.5rem 2rem 0.5rem;
+    background-color: transparent;
+    border-block-end: 0;
+    h1 {
+      margin: 0;
+      font-size: 1.625rem;
+      line-height: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--foreground);
+    }
+  }
+  [data-page-description] {
+    margin: 0 0 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--muted-foreground);
+  }
+  [data-page-actions] {
+    gap: 0.5rem;
+    :is(button, a.button).small {
+      height: 2.25rem;
+      padding: 0 0.875rem;
+      gap: 0.375rem;
+      border-radius: var(--radius-medium);
+      font-size: 0.8125rem;
+      line-height: 1rem;
+      &.icon { width: 2.25rem; padding: 0; }
+    }
+    :is(button, a.button).small.outline {
+      background-color: var(--card);
+      border-color: var(--border);
+      color: var(--foreground);
+      &:hover { background-color: var(--faint); border-color: var(--input); }
+    }
+    button.small[aria-pressed="true"] {
+      background-color: color-mix(in oklab, var(--primary) 12%, var(--card));
+      border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+      color: var(--primary-ink);
+    }
+    select {
+      height: 2.25rem;
+      width: 140px;
+      padding-block: 0;
+      padding-inline-start: 0.75rem;
+      border-radius: var(--radius-medium);
+      font-size: 0.8125rem;
+      background-color: var(--card);
+    }
+  }
+  [data-page-body] { padding: 1rem 2rem 2rem; }
+
+  /* Dashboard Widgets */
   .card[data-widget] {
     position: relative;
     overflow: hidden;
-    gap: 1rem;
-    padding: 1.25rem;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
     border-radius: var(--radius-large);
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px light-dark(rgb(17 24 39 / 0.02), rgb(0 0 0 / 0.2));
+    transition: border-color 140ms ease;
 
+    &:hover { border-color: color-mix(in oklab, var(--primary) 40%, var(--border)); }
     > header { gap: 0.5rem; }
     > header h4 { margin: 0; font-size: 0.8125rem; line-height: 1.25rem; font-weight: 500; color: var(--muted-foreground); }
-    > header small { display: block; margin-top: 0.125rem; font-size: 0.75rem; line-height: 1rem; color: var(--faint-foreground); }
-  }
-  /* Dashboard widgets: on hover the card lifts slightly (border + shadow) and a green
-     line sweeps in along the bottom edge (the original dashboard hover). */
-  [data-dashboard-grid] .card[data-widget] {
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
-    &::after {
-      content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 2px;
-      background-image: linear-gradient(90deg, color-mix(in oklab, var(--primary) 60%, var(--card)), var(--primary));
-      transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
-    }
-    &:hover {
-      border-color: var(--input);
-      box-shadow: 0 4px 12px -4px light-dark(rgb(26 28 27 / 0.12), rgb(0 0 0 / 0.5));
-    }
-    &:hover::after { transform: scaleX(1); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    [data-dashboard-grid] .card[data-widget]::after { transition: none; }
-  }
-  /* Number widgets: a thin strip in the widget's colour along the top, fading to the right. */
-  [data-dashboard-grid] .card[data-widget="number"]::before {
-    content: ""; position: absolute; inset-inline: 0; top: 0; height: 2px;
-    background-image: linear-gradient(to right, var(--widget-ink, var(--primary)), transparent);
+    > header small { display: block; margin-top: 0.125rem; font-size: 0.75rem; line-height: 1rem; color: var(--muted-foreground); }
   }
   .card[data-widget="number"] > header { align-items: flex-start; }
   .card:is([data-widget="table"], [data-widget="shortcuts"]) { gap: 0.75rem; }
 
-  /* Per-colour ink (widget icon, line/bar colour), darker in light mode. */
-  [data-widget-color] { --widget-ink: light-dark(#2a63a8, #82b4ec); }
-  [data-widget-color="green"] { --widget-ink: light-dark(#137a5a, #3ccf8e); }
-  [data-widget-color="purple"] { --widget-ink: light-dark(#6a4bb3, #b19ded); }
-  [data-widget-color="orange"] { --widget-ink: light-dark(#a3560f, #f0a660); }
-  [data-widget-color="red"] { --widget-ink: light-dark(#b4323a, #f08a8f); }
-  [data-widget-color="cyan"] { --widget-ink: light-dark(#0f7a8f, #6ccde6); }
-  [data-widget-color] { --widget-chart: var(--widget-ink); }
+  [data-widget-color] { --widget-accent: light-dark(#3b82f6, #60a5fa); --widget-chart: light-dark(#3b82f6, #60a5fa); }
+  [data-widget-color="green"] { --widget-accent: light-dark(#10b981, #34d399); --widget-chart: light-dark(#10b981, #34d399); }
+  [data-widget-color="purple"] { --widget-accent: light-dark(#8b5cf6, #a78bfa); --widget-chart: light-dark(#8b5cf6, #a78bfa); }
+  [data-widget-color="orange"] { --widget-accent: light-dark(#f59e0b, #fbbf24); --widget-chart: light-dark(#f59e0b, #fbbf24); }
+  [data-widget-color="red"] { --widget-accent: light-dark(#ef4444, #f87171); --widget-chart: light-dark(#ef4444, #f87171); }
+  [data-widget-color="cyan"] { --widget-accent: light-dark(#06b6d4, #22d3ee); --widget-chart: light-dark(#06b6d4, #22d3ee); }
 
   [data-widget-icon] {
     display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
-    width: 2.25rem; height: 2.25rem; border-radius: var(--radius-medium);
-    color: var(--widget-ink);
-    background-color: color-mix(in oklab, var(--widget-ink) 13%, transparent);
+    width: 2rem; height: 2rem; border-radius: var(--radius-medium);
+    color: var(--widget-accent);
+    background-color: var(--faint);
+    border: 1px solid var(--border);
   }
   [data-widget-value] {
     margin: 0;
-    font-size: 1.875rem; line-height: 2.25rem; font-weight: 600; letter-spacing: -0.01em;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--foreground);
   }
   [data-widget-change] {
-    margin-top: -0.75rem;
+    margin-top: -0.25rem;
     font-size: 0.75rem; line-height: 1rem; color: var(--muted-foreground);
-    [data-trend="up"] { color: var(--success); }
-    [data-trend="down"] { color: var(--danger); }
-    [data-trend="flat"] { color: var(--faint-foreground); }
+    [data-trend="up"] { color: var(--primary-ink); font-weight: 500; }
+    [data-trend="down"] { color: var(--danger); font-weight: 500; }
+    [data-trend="flat"] { color: var(--muted-foreground); }
   }
 
-  /* h-6 w-6 muted edit/delete icons; delete turns red on hover. */
   button[data-widget-action].icon.small {
     width: 1.5rem; height: 1.5rem;
-    color: var(--faint-foreground);
-    --_hov: var(--accent);
-    &:hover { color: var(--foreground); }
+    color: var(--muted-foreground);
+    &:hover { color: var(--foreground); background-color: var(--faint); }
   }
-  button[data-widget-action="delete"].icon.small {
-    --_hov: color-mix(in oklab, var(--danger) 12%, transparent);
-    &:hover { color: var(--danger); }
+  button[data-widget-action="delete"].icon.small:hover {
+    color: var(--danger);
+    background-color: color-mix(in oklab, var(--danger) 10%, transparent);
   }
 
-  /* Skeleton card: label, icon tile, value and hint placeholders. */
-  .card[data-widget][aria-busy="true"] { box-shadow: none; }
+  .card[data-widget][aria-busy="true"] { background-color: var(--card); box-shadow: none; }
   [data-widget] .skeleton {
     background-color: var(--muted); margin: 0;
     &[data-size="label"] { width: 6rem; }
-    &[data-size="tile"] { width: 2.25rem; height: 2.25rem; border-radius: var(--radius-medium); }
+    &[data-size="tile"] { width: 2rem; height: 2rem; border-radius: var(--radius-medium); }
     &[data-size="value"] { width: 5rem; height: 2rem; }
-    &[data-size="hint"] { width: 8rem; height: 0.75rem; margin-top: -0.5rem; }
+    &[data-size="hint"] { width: 8rem; height: 0.75rem; }
   }
   [data-widget="chart"] .skeleton.box { width: 100%; flex: 1; }
 
-  /* Charts (components/charts): the card heading names the chart, so the
-     figcaption stays only as the figure's accessible name; "Show data" is a
-     quiet right-aligned toggle. */
-  figure[data-chart] {
-    margin: 0;
+  [data-widget-chart] {
     figcaption { display: none; }
-    > ul { gap: 0.75rem; }
-    > ul small { font-size: 0.75rem; color: var(--muted-foreground); }
+    .chart-pie { width: var(--pie-size); max-width: 100%; margin-inline: auto; }
+    .chart-pie path { stroke: var(--card); stroke-width: 1.5; }
+    figure > ul { justify-content: center; gap: 0.75rem; }
+    figure > ul small { font-size: 0.75rem; color: var(--muted-foreground); }
+    figure > ul svg[height="12"]:not([width="28"]) { width: 2.25rem; height: 0.625rem; }
     details { border: 0; overflow: visible; }
     summary { padding: 0; justify-content: flex-end; font-weight: 400; color: var(--muted-foreground); }
     summary:hover { background: none; color: var(--foreground); }
     summary::after { display: none; }
     details[open] summary { border: 0; }
   }
-  .chart-pie-legend {
-    strong { font-weight: 600; text-align: end; }
-    small { font-size: 0.8125rem; }
-  }
-  /* Dashboard pie widgets are sized to the card. */
-  [data-widget-chart] .chart-pie { width: var(--pie-size); }
 
-  /* Table widget: grouped table and row list (hover rows, initials tiles, pills). */
-  [data-widget] table th { font-size: 0.75rem; }
+  [data-widget] table th { font-size: 0.75rem; font-weight: 500; color: var(--muted-foreground); }
   [data-widget-rows] { gap: 0.5rem; }
   [data-widget-row] {
     align-items: flex-start; gap: 0.75rem;
-    padding: 0.625rem 0.75rem; border-radius: var(--radius-medium); line-height: 1.25rem;
-    transition: background-color var(--transition-fast);
+    padding: 0.625rem 0.75rem; border-radius: var(--radius-medium); line-height: 1.25rem; transition: background-color 120ms ease;
     &:hover { background-color: var(--faint); }
-    strong { font-weight: 500; }
+    strong { font-weight: 500; color: var(--foreground); }
     p { margin: 0; color: var(--muted-foreground); }
-    small { font-size: 0.75rem; color: var(--faint-foreground); }
+    small { font-size: 0.75rem; color: var(--muted-foreground); }
     > div > .hstack:last-child { margin-top: 0.25rem; gap: 0.5rem; }
   }
   figure[data-variant="avatar"][data-direction] {
-    border-radius: var(--radius-medium); font-size: 0.875rem; font-weight: 600;
-    color: light-dark(#2a63a8, #82b4ec);
-    background-color: color-mix(in oklab, light-dark(#2a63a8, #82b4ec) 14%, transparent);
+    border-radius: 9999px;
+    font-size: 0.75rem; font-weight: 600;
+    background-color: var(--secondary);
+    color: var(--foreground);
+    border: 1px solid var(--border);
     abbr { text-decoration: none; }
   }
   figure[data-variant="avatar"][data-direction="incoming"] {
-    color: var(--primary);
-    background-color: color-mix(in oklab, var(--primary) 14%, transparent);
+    background-color: color-mix(in oklab, var(--primary) 12%, var(--card));
+    color: var(--primary-ink);
+    border-color: color-mix(in oklab, var(--primary) 24%, var(--border));
   }
   .badge[data-pill] {
-    padding: 0.125rem 0.5rem; border-radius: var(--radius-full); border: 0;
+    padding: 0.125rem 0.5rem; border-radius: 9999px; border: 1px solid transparent;
     font-size: 0.6875rem; line-height: 1rem; font-weight: 500;
   }
-  .badge[data-pill="blue"] { --_pill: light-dark(#2a63a8, #82b4ec); }
-  .badge[data-pill="green"] { --_pill: var(--primary); }
-  .badge[data-pill="red"] { --_pill: var(--danger); }
-  .badge[data-pill="grey"] { --_pill: var(--muted-foreground); }
-  .badge[data-pill] { background-color: color-mix(in oklab, var(--_pill) 14%, transparent); color: var(--_pill); }
+  .badge[data-pill="blue"] { background-color: light-dark(#eff6ff, rgb(59 130 246 / 0.14)); color: light-dark(#1d4ed8, #93c5fd); border-color: light-dark(#dbeafe, rgb(59 130 246 / 0.25)); }
+  .badge[data-pill="green"] { background-color: light-dark(#ecfdf5, rgb(16 185 129 / 0.14)); color: light-dark(#047857, #6ee7b7); border-color: light-dark(#d1fae5, rgb(16 185 129 / 0.25)); }
+  .badge[data-pill="red"] { background-color: light-dark(#fef2f2, rgb(239 68 68 / 0.14)); color: light-dark(#b91c1c, #fca5a5); border-color: light-dark(#fee2e2, rgb(239 68 68 / 0.25)); }
+  .badge[data-pill="grey"] { background-color: var(--secondary); color: var(--muted-foreground); border-color: var(--border); }
 
-  /* Shortcut tiles: flat tiles with a tinted icon chip in each shortcut's hue. */
-  [data-shortcut-grid] { gap: 0.75rem; padding-top: 0.25rem; align-content: start; }
+  [data-shortcut-grid] { gap: 0.625rem; padding-top: 0.25rem; align-content: start; }
   a[data-shortcut] {
-    height: 100%; padding: 1rem; gap: 0.5rem; border-radius: var(--radius-medium);
+    height: 100%; padding: 0.875rem 0.75rem; gap: 0.5rem; border-radius: var(--radius-medium);
     border: 1px solid var(--border);
     background-color: var(--faint);
-    color: var(--foreground); font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; text-align: center; text-decoration: none;
-    transition: border-color var(--transition-fast), background-color var(--transition-fast);
-    &:hover { color: var(--foreground); border-color: var(--input); background-color: var(--card); }
+    color: var(--foreground); font-size: 0.8125rem; line-height: 1.25rem; font-weight: 500; text-align: center; text-decoration: none;
+    transition: background-color 120ms ease, border-color 120ms ease;
+    &:hover {
+      background-color: var(--card);
+      border-color: var(--primary);
+      [data-shortcut-icon] {
+        color: var(--primary-ink);
+        border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+        background-color: color-mix(in oklab, var(--primary) 10%, var(--card));
+      }
+    }
   }
   [data-shortcut-icon] {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-medium);
-    /* Mixing with the foreground darkens the hue in light mode and lightens it in dark. */
-    color: color-mix(in oklab, var(--from, #10b981) 70%, var(--foreground));
-    background-color: color-mix(in oklab, var(--from, #10b981) 14%, transparent);
+    width: 2.25rem; height: 2.25rem; border-radius: var(--radius-medium);
+    color: var(--muted-foreground);
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
   }
-  [data-shortcut="chat"] { --from: #10b981; }
-  [data-shortcut="campaigns"] { --from: #f97316; }
-  [data-shortcut="templates"] { --from: #3b82f6; }
-  [data-shortcut="chatbot"] { --from: #a855f7; }
-  [data-shortcut="contacts"] { --from: #06b6d4; }
-  [data-shortcut="flows"] { --from: #6366f1; }
-  [data-shortcut="transfers"] { --from: #f43f5e; }
-  [data-shortcut="agentAnalytics"] { --from: #14b8a6; }
-  [data-shortcut="metaInsights"] { --from: #0ea5e9; }
-  [data-shortcut="settings"] { --from: #6b7280; }
-  [data-shortcut="accounts"] { --from: #8b5cf6; }
-  [data-shortcut="cannedResponses"] { --from: #f59e0b; }
-  [data-shortcut="tags"] { --from: #ec4899; }
-  [data-shortcut="teams"] { --from: #84cc16; }
-  [data-shortcut="users"] { --from: #d946ef; }
-  [data-shortcut="roles"] { --from: #64748b; }
-  [data-shortcut="apiKeys"] { --from: #eab308; }
-  [data-shortcut="webhooks"] { --from: #ef4444; }
-  [data-shortcut="customActions"] { --from: #f59e0b; }
-  [data-shortcut="sso"] { --from: #10b981; }
 
-  /* Dashboard dialogs. */
   dialog[data-classic-dialog] {
     background-color: var(--card);
     border-color: var(--border);
   }
 
-  /* ------------------------------------------------------------------------
-     Shared patterns
-     ------------------------------------------------------------------------ */
-  /* Status badges: one mapping for every list (lib/status.ts picks the tone).
-     neutral = draft/scheduled/away, info = in progress, success = done,
-     warning = needs attention, danger = failed. */
-  .badge[data-status] {
-    display: inline-flex; align-items: center; gap: 0.375rem;
-    border: 0; font-weight: 500; white-space: nowrap;
-    background-color: color-mix(in oklab, var(--_s) 13%, transparent);
-    color: var(--_s);
-    &::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 50%; background-color: currentColor; }
-  }
-  .badge[data-status="neutral"] { --_s: var(--muted-foreground); }
-  .badge[data-status="info"] { --_s: light-dark(#2a63a8, #82b4ec); }
-  .badge[data-status="success"] { --_s: var(--success); }
-  .badge[data-status="warning"] { --_s: var(--warning); }
-  .badge[data-status="danger"] { --_s: var(--danger); }
-  /* Plain labels (category, role, tag): no dot, neutral fill. */
-  .badge[data-label] { border: 0; background-color: var(--muted); color: var(--foreground); font-weight: 500; }
-
-  /* Campaign delivery bar: read / delivered / sent / failed. */
-  [data-delivery] { background-color: var(--muted); border-radius: var(--radius-full); }
-  [data-delivery] > [data-k="read"], [data-key="read"] { background-color: var(--primary); }
-  [data-delivery] > [data-k="delivered"], [data-key="delivered"] { background-color: color-mix(in oklab, var(--primary) 50%, var(--card)); }
-  [data-delivery] > [data-k="sent"], [data-key="sent"] { background-color: color-mix(in oklab, var(--primary) 22%, var(--card)); }
-  [data-delivery] > [data-k="failed"], [data-key="failed"] { background-color: var(--danger); }
-  [data-delivery-legend] { font-size: 0.75rem; color: var(--muted-foreground); }
-  [data-key] { border-radius: 2px; }
-
-  /* Skeleton placeholders already show that something is loading, so don't also draw
-     Oat's aria-busy spinner on them (aria-busy stays for screen readers). */
-  [aria-busy="true"]:is(.skeleton, :has(.skeleton))::before { content: none; }
-
-  /* Empty state inside a card or chart. */
-  [data-empty] { color: var(--muted-foreground); font-size: 0.875rem; }
-  [data-empty] strong { color: var(--foreground); font-weight: 600; }
-
-  /* Row "more" menu (ot-dropdown popover). */
-  [data-row-menu] [role="menuitem"][data-variant="danger"] { color: var(--danger); }
-
-  /* A card whose whole body collapses (template details): the card is the box, so the
-     <details> inside drops its own border and padding. */
-  .card > details:only-child { border: 0; overflow: visible; }
-  .card > details:only-child > summary { padding: 0; }
-  .card > details:only-child[open] > summary { border: 0; }
-  /* Assign-contact rows: left-aligned, full width; the current assignee is tinted. */
-  button[data-assign-row] { height: auto; padding: 0.5rem 0.625rem; justify-content: flex-start; text-align: start; font-weight: 400; }
-  button[data-assign-row][aria-current] { background-color: color-mix(in oklab, var(--primary) 8%, transparent); }
-  /* Label for a control that isn't a plain <label data-field> (comboboxes, tag pickers). */
-  [data-field-label] { font-size: var(--text-7); font-weight: var(--font-medium); }
-  dl.stat-row dt { font-size: 0.8125rem; color: var(--muted-foreground); }
-  dl.stat-row dd { font-size: 1.5rem; line-height: 2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-  dl[data-facts] dt { color: var(--muted-foreground); font-size: 0.875rem; }
-  dl[data-facts] dd { font-size: 0.875rem; }
-  ol[data-steps] { font-size: 0.875rem; }
-  ol[data-steps] > li::before { border-radius: 50%; font-size: 0.75rem; font-weight: 600; background-color: var(--muted); color: var(--muted-foreground); }
-  ol[data-steps] > li[data-done]::before { background-color: var(--primary); color: var(--primary-foreground); }
-  /* Section tabs (chatbot): underlined links on a rule, like Oat tabs. */
-  nav[data-section-tabs] { background-color: var(--card); box-shadow: inset 0 -1px 0 var(--border); }
-  nav[data-section-tabs] a { font-size: 0.875rem; font-weight: 500; color: var(--muted-foreground); text-decoration: none; }
-  nav[data-section-tabs] a:hover { color: var(--foreground); }
-  nav[data-section-tabs] a[aria-current] { color: var(--foreground); box-shadow: inset 0 -2px 0 var(--primary); }
-
-  /* Phones: let the page header grow when the description wraps. */
-  @media (max-width: 48rem) {
-    [data-page-header] { height: auto; min-height: 4rem; padding-block: 0.75rem; }
-  }
-  @media (max-width: 48rem) {
-    table[data-stack] tbody td::before { font-size: 0.75rem; color: var(--muted-foreground); }
-    table[data-stack] tbody tr:hover { background-color: transparent; }
-  }
-
-  /* In-page section menu (settings). */
-  .settings-shell > nav[data-subnav] { background-color: var(--card); border-inline-end: 1px solid var(--border); }
-  nav[data-subnav] {
-    small { font-size: 0.75rem; font-weight: 500; color: var(--muted-foreground); }
-    a { border-radius: var(--radius-small); color: var(--foreground); text-decoration: none; font-size: 0.875rem; }
-    a:hover { background-color: var(--accent); }
-    a[aria-current] { background-color: color-mix(in oklab, var(--primary) 10%, transparent); color: var(--primary); font-weight: 500; }
-  }
-
-  /* Flow editors: vue-flow's own (unlayered) minimap and controls CSS hard-codes white,
-     so these need !important to follow the theme. */
-  .vue-flow__minimap { background-color: var(--card) !important; border: 1px solid var(--border); border-radius: var(--radius-medium); overflow: hidden; box-shadow: var(--shadow-small); }
-  .vue-flow__controls { border: 1px solid var(--border); border-radius: var(--radius-medium); overflow: hidden; box-shadow: var(--shadow-small) !important; }
-  .vue-flow__controls-button { background-color: var(--card) !important; border-bottom-color: var(--border) !important; color: var(--foreground) !important; fill: currentColor !important; }
-  .vue-flow__controls-button:hover { background-color: var(--accent) !important; }
-
-  /* Dashboard edit layout: the widget being dragged over shows a brand outline. */
   [data-layout-editing] > [data-drag-over] > [data-widget] { outline: 2px dashed var(--primary); outline-offset: 2px; }
+
+  [data-org-logo] { width: 1.75rem; height: 1.75rem; flex-shrink: 0; object-fit: contain; border-radius: var(--radius-medium); }
+  [data-org-logo="small"] { width: 1.25rem; height: 1.25rem; border-radius: 0.25rem; }
+  [data-org-logo="large"] { width: 4rem; height: 4rem; padding: 0.25rem; border: 1px solid var(--border); border-radius: var(--radius-large); }
+  [data-org-trigger] {
+    height: auto; padding: 0.25rem 0.375rem; gap: 0.5rem; justify-content: flex-start; text-align: start;
+    strong { font-size: 0.875rem; font-weight: 600; color: var(--foreground); }
+  }
 }

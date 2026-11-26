@@ -199,14 +199,16 @@ function getRowKey(item: T, index: number): string {
         <!-- Empty State -->
         <tr v-else-if="sortedItems.length === 0">
           <td :colspan="columns.length" class="align-center text-light">
-            <slot name="empty">
-              <component :is="emptyIcon" v-if="emptyIcon" :size="32" />
-              <p v-if="emptyTitle">{{ emptyTitle }}</p>
-              <p v-if="emptyDescription"><small>{{ emptyDescription }}</small></p>
-              <div class="mt-4">
-                <slot name="empty-action" />
-              </div>
-            </slot>
+            <div class="vstack items-center gap-2 py-8">
+              <slot name="empty">
+                <component :is="emptyIcon" v-if="emptyIcon" :size="28" class="text-light" />
+                <p v-if="emptyTitle" class="m-0"><strong>{{ emptyTitle }}</strong></p>
+                <p v-if="emptyDescription" class="m-0"><small>{{ emptyDescription }}</small></p>
+                <div v-if="$slots['empty-action']" class="mt-2">
+                  <slot name="empty-action" />
+                </div>
+              </slot>
+            </div>
           </td>
         </tr>
 

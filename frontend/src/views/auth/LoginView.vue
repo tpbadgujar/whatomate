@@ -84,13 +84,61 @@ const initiateSSO = (provider: string) => {
 </script>
 
 <template>
-  <main class="flex items-center justify-center h-screen scroll-y p-4">
-    <div class="auth-panel vstack gap-4">
+  <main class="auth-split">
+    <aside class="auth-showcase" aria-hidden="true">
+      <div class="hstack items-center gap-3">
+        <img v-if="logoUrl" :src="logoUrl" :alt="appName" height="32" />
+        <span v-else class="showcase-logo-mark">
+          <MessageSquare :size="18" />
+        </span>
+        <strong style="font-size: 1rem; letter-spacing: -0.01em;">{{ appName }}</strong>
+      </div>
+
+      <div class="vstack gap-6" style="max-width: 28rem;">
+        <div class="vstack gap-2">
+          <h1 style="margin: 0; font-size: 1.75rem; line-height: 1.2; font-weight: 600; color: #f1f3f1;">
+            {{ $t('auth.welcomeTitle', { name: appName }) }}
+          </h1>
+          <p style="margin: 0; font-size: 0.9375rem; line-height: 1.5; color: #9aa8a1;">
+            {{ $t('auth.welcomeSubtitle') }}
+          </p>
+        </div>
+
+        <div class="auth-showcase-card vstack gap-3">
+          <div class="hstack items-center justify-between" style="border-bottom: 1px solid #243830; padding-bottom: 0.75rem;">
+            <span class="hstack items-center gap-2" style="font-size: 0.8125rem; color: #c7d2cc;">
+              <span class="status-dot" data-state="online"></span>
+              {{ $t('nav.chat') }}
+            </span>
+            <small style="color: #7c8d84; font-family: var(--font-mono);">WhatsApp Business</small>
+          </div>
+          <div class="vstack gap-2" style="font-size: 0.8125rem; color: #9aa8a1;">
+            <div class="hstack justify-between">
+              <span>{{ $t('nav.chatbot') }}</span>
+              <span style="color: #34d399;">{{ $t('nav.flows') }}</span>
+            </div>
+            <div class="hstack justify-between">
+              <span>{{ $t('nav.campaigns') }}</span>
+              <span style="color: #c7d2cc;">{{ $t('nav.templates') }}</span>
+            </div>
+            <div class="hstack justify-between">
+              <span>{{ $t('nav.agentAnalytics') }}</span>
+              <span style="color: #c7d2cc;">{{ $t('nav.metaInsights') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="auth-form-pane">
+      <div class="auth-panel vstack gap-4">
         <article class="card">
           <header class="vstack gap-2 items-center align-center mb-6">
-            <img v-if="logoUrl" :src="logoUrl" :alt="appName" height="48" />
-            <MessageSquare v-else :size="32" />
-            <h2>{{ $t('auth.welcomeTitle', { name: appName }) }}</h2>
+            <img v-if="logoUrl" :src="logoUrl" :alt="appName" height="40" />
+            <span v-else data-page-icon style="width: 2.5rem; height: 2.5rem;">
+              <MessageSquare :size="20" />
+            </span>
+            <h2>{{ $t('auth.signIn') }}</h2>
             <p class="text-light">{{ $t('auth.welcomeSubtitle') }}</p>
           </header>
 
@@ -147,10 +195,20 @@ const initiateSSO = (provider: string) => {
             </p>
           </footer>
         </article>
-        <p class="text-light align-center">
-          {{ $t('auth.poweredBy') }}
-          <a href="https://whatomate.io/" target="_blank" rel="noopener noreferrer">Whatomate</a>
-        </p>
-    </div>
+      </div>
+    </section>
   </main>
 </template>
+
+<style scoped>
+.showcase-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-medium);
+  background-color: #10b981;
+  color: #ffffff;
+}
+</style>

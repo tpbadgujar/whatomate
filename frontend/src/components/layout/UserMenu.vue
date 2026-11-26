@@ -6,7 +6,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useContactsStore } from '@/stores/contacts'
 import { usersService, chatbotService } from '@/services/api'
 import Modal from '@/components/oat/Modal.vue'
-import { LogOut, User } from '@/lib/icons'
+import { LogOut, User, ChevronDown } from '@/lib/icons'
 import { toast } from '@/lib/toast'
 import { getInitials } from '@/lib/utils'
 import ThemeSwitcher from './ThemeSwitcher.vue'
@@ -158,14 +158,17 @@ const closeMenu = () => menu.value?.hidePopover()
 
 <template>
   <ot-dropdown>
-    <button type="button" class="ghost w-100" :popovertarget="menuId" :aria-label="$t('userMenu.userMenu')">
-      <figure data-variant="avatar" class="small">
+    <button type="button" class="outline small" style="height: 2.375rem; padding: 0.25rem 0.625rem; gap: 0.5rem; border-radius: 9999px;" :popovertarget="menuId" :aria-label="$t('userMenu.userMenu')">
+      <figure data-variant="avatar" class="small" style="width: 1.75rem; height: 1.75rem; font-size: 0.7rem;">
         <abbr>{{ getInitials(authStore.user?.full_name || 'U') }}</abbr>
       </figure>
-      <span class="vstack min-w-0">
-        <span class="truncate">{{ authStore.user?.full_name }}</span>
-        <small class="truncate text-light">{{ authStore.user?.email }}</small>
+      <span class="vstack min-w-0" style="text-align: start; line-height: 1.15;">
+        <span class="truncate" style="max-width: 9rem; font-weight: 500; font-size: 0.75rem;">{{ authStore.user?.full_name }}</span>
+        <small class="truncate text-light" style="max-width: 9rem; font-size: 0.6875rem;">
+          {{ authStore.isAvailable ? $t('userMenu.available') : $t('userMenu.away') }}
+        </small>
       </span>
+      <ChevronDown :size="13" class="text-light" aria-hidden="true" />
     </button>
     <div :id="menuId" ref="menu" popover>
       <div class="vstack gap-2 p-4">

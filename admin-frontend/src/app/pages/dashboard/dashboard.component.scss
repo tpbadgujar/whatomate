@@ -1,0 +1,399 @@
+.dashboard-page {
+  display: grid;
+  gap: 24px;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--hairline-strong);
+}
+
+.seg-btn {
+  height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out-expo),
+    color var(--dur-fast) var(--ease-out-expo);
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &.active {
+    background: var(--bg-raised);
+    color: var(--text-primary);
+    box-shadow: var(--top-highlight);
+  }
+}
+
+/* KPI Row */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.kpi-card {
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--dur-fast) var(--ease-out-expo);
+
+  &:hover {
+    border-color: var(--hairline-strong);
+  }
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.kpi-value {
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.kpi-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.kpi-delta {
+  color: var(--positive);
+  font-weight: 500;
+
+  &.negative {
+    color: var(--negative);
+  }
+}
+
+.kpi-comp {
+  color: var(--text-muted);
+}
+
+/* Analytics + Stages */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  padding: 22px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+
+.panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.panel-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+
+  &.dashed {
+    border-top: 2px dashed var(--text-muted);
+    height: 0;
+  }
+}
+
+/* Pipeline Stages */
+.stages-list {
+  display: grid;
+  gap: 16px;
+}
+
+.stage-row {
+  display: grid;
+  gap: 8px;
+}
+
+.stage-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.stage-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.stage-val {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+}
+
+.stage-count {
+  color: var(--text-muted);
+}
+
+.stage-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+
+.stage-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 500ms var(--ease-out-expo);
+}
+
+/* Bottom Grid */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 16px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.crm-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 0 12px 10px 0;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--hairline);
+
+    &.num {
+      text-align: right;
+    }
+  }
+
+  td {
+    padding: 12px 12px 12px 0;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: middle;
+    font-size: 13.5px;
+
+    &.num {
+      text-align: right;
+    }
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr {
+    transition: background-color var(--dur-fast) var(--ease-out-expo);
+  }
+}
+
+.deal-title {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.deal-company {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  border: 1px solid var(--hairline);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.stage-badge[data-stage='Negotiation'] .badge-dot {
+  background: var(--accent-1);
+}
+
+.stage-badge[data-stage='Proposal'] .badge-dot {
+  background: var(--warning);
+}
+
+.stage-badge[data-stage='Qualified'] .badge-dot {
+  background: #3b82f6;
+}
+
+.stage-badge[data-stage='Closed Won'] .badge-dot {
+  background: var(--positive);
+}
+
+.won-label {
+  font-size: 12px;
+  color: var(--positive);
+}
+
+/* Activity Feed */
+.activity-list {
+  display: grid;
+  gap: 14px;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--hairline);
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--accent-1);
+
+  &[data-type='call'] {
+    background: #3b82f6;
+  }
+
+  &[data-type='email'] {
+    background: var(--positive);
+  }
+
+  &[data-type='meeting'] {
+    background: var(--warning);
+  }
+}
+
+.activity-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.activity-detail {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.activity-meta {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+@media (max-width: 1200px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analytics-grid,
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

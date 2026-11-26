@@ -9,8 +9,6 @@
   .flex-1 { flex: 1 1 0%; }
   .shrink-0 { flex-shrink: 0; }
   .flex-wrap { flex-wrap: wrap; }
-  .flex-nowrap { flex-wrap: nowrap; }
-  .gap-3 { gap: var(--space-3); }
   .sticky-top { position: sticky; top: 0; z-index: 1; }
   .relative { position: relative; }
   .fixed-bottom-end { position: fixed; inset-block-end: var(--space-6); inset-inline-end: var(--space-6); z-index: 40; }
@@ -21,11 +19,6 @@
   .pre-wrap { white-space: pre-wrap; }
   .chart-tooltip { position: absolute; pointer-events: none; white-space: nowrap; z-index: 1; }
   .chart-pie { max-width: 15rem; }
-  /* Pie/donut beside its legend; the legend drops below on narrow cards. */
-  .chart-pie-layout { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-4) var(--space-6); }
-  .chart-pie-layout > .chart-pie { flex: 0 1 15rem; max-width: 100%; }
-  .chart-pie-legend { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: var(--space-2) var(--space-3); min-width: 12rem; }
-  .chart-pie-legend > li { display: contents; }
   .meter-row { display: grid; grid-template-columns: 7rem 1fr 3rem; align-items: center; gap: var(--space-2); }
   /* Oat pads every <main> for document pages; app pages set their own spacing. */
   [data-sidebar-layout] > main { padding-block-start: 0; }
@@ -35,7 +28,6 @@
   .auth-panel :is(h1, h2, h3, p) { margin: 0; }
   /* Oat makes form controls full width; opt out for inline toolbar controls. */
   .w-auto { width: auto; }
-  .block { display: block; }
   .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   /* Chat: side columns are 20rem (old w-80); on phones the one visible column fills the screen. */
@@ -94,68 +86,310 @@
     .toast-container[data-placement^="top"] { top: 7.5rem; }
   }
 
-  /* List toolbar: filters on the left, search on the right. */
-  [data-toolbar] { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
-  [data-toolbar] > div { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-  /* Search field with its icon inside the input. */
-  .search-field { position: relative; width: 16rem; max-width: 100%; }
-  .search-field > svg { position: absolute; inset-inline-start: var(--space-3); top: 50%; translate: 0 -50%; pointer-events: none; }
-  .search-field > input { margin: 0; padding-inline-start: 2.25rem; }
-  .search-field > button { position: absolute; inset-inline-end: var(--space-1); top: 50%; translate: 0 -50%; }
-  @media (max-width: 48rem) { [data-toolbar] .search-field { width: 100%; } }
-  /* Number cards: as many per row as fit, at least 11rem each. */
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: var(--space-4); }
-  /* Campaign delivery bar. */
-  [data-delivery] { display: flex; height: 0.375rem; overflow: hidden; }
-  [data-delivery] > i { display: block; }
-  [data-key] { display: inline-block; width: 0.5rem; height: 0.5rem; }
-  [data-delivery-legend] { display: flex; flex-wrap: wrap; gap: 0 var(--space-3); margin-block-start: var(--space-1); }
-  [data-delivery-legend] > span { display: inline-flex; align-items: center; gap: var(--space-1); }
-  [data-empty] { padding: var(--space-8) var(--space-4); text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
-  [data-row-menu] { min-width: 11rem; }
-  /* Settings: section menu beside the page. */
-  .settings-layout { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: var(--space-6); align-items: start; }
-  @media (max-width: 48rem) { .settings-layout { grid-template-columns: 1fr; } }
-  /* Settings pages: section menu column + the page. */
-  .settings-shell { display: grid; grid-template-columns: 14rem minmax(0, 1fr); height: 100%; min-height: 0; }
-  .settings-shell > nav[data-subnav] { overflow-y: auto; padding: var(--space-4) var(--space-2); }
-  @media (max-width: 48rem) {
-    .settings-shell { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
-    .settings-shell > nav[data-subnav] { flex-direction: row; overflow-x: auto; padding: var(--space-2); }
-    .settings-shell > nav[data-subnav] small { display: none; }
-    .settings-shell > nav[data-subnav] a { white-space: nowrap; }
+  /* ========================================================================
+     Clean Airy Emerald SaaS Shell (Sidebar + Top Header Bar)
+     ======================================================================== */
+  .saas-shell {
+    display: grid;
+    grid-template-columns: 15.5rem 1fr;
+    grid-template-rows: 3.75rem 1fr;
+    height: 100dvh;
+    background-color: var(--background);
+    overflow: hidden;
+    transition: grid-template-columns 160ms ease;
   }
-  nav[data-subnav] { display: flex; flex-direction: column; }
-  nav[data-subnav] small { display: block; padding: var(--space-3) var(--space-3) var(--space-1); }
-  nav[data-subnav] a { display: flex; align-items: center; gap: var(--space-2); padding: 0.375rem var(--space-3); }
-  /* Label / value list (chatbot overview). */
-  dl[data-facts] { display: grid; grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr); gap: var(--space-3) var(--space-4); margin: 0; }
-  dl[data-facts] dd { margin: 0; }
-  @media (max-width: 40rem) { dl[data-facts] { grid-template-columns: 1fr; gap: var(--space-1); } dl[data-facts] dd { margin-block-end: var(--space-2); } }
-  /* Numbered set-up checklist. */
-  ol[data-steps] { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-4); counter-reset: step; }
-  ol[data-steps] > li { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); column-gap: var(--space-3); counter-increment: step; }
-  ol[data-steps] > li::before { content: counter(step); grid-row: span 3; width: 1.5rem; height: 1.5rem; display: grid; place-items: center; }
-  ol[data-steps] > li[data-done]::before { content: "✓"; }
-  ol[data-steps] > li > * { grid-column: 2; }
-  /* Section tabs as links (chatbot pages). */
-  nav[data-section-tabs] { display: flex; flex-wrap: wrap; gap: var(--space-1); padding-inline: var(--space-4); }
-  nav[data-section-tabs] a { padding: var(--space-2) var(--space-3); white-space: nowrap; }
-  /* DataTable on phones: rows become stacked cards; the first cell is the title,
-     the last (actions) sits at the end, the rest are "label  value" lines. */
-  @media (max-width: 48rem) {
-    table[data-stack] thead { display: none; }
-    table[data-stack] tbody tr { display: block; padding-block: var(--space-3); }
-    table[data-stack] tbody td { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); padding: var(--space-1) 0; text-align: end; }
-    table[data-stack] tbody td::before { content: attr(data-label); flex-shrink: 0; text-align: start; }
-    table[data-stack] tbody td:first-child { display: block; text-align: start; }
-    table[data-stack] tbody td:first-child::before,
-    table[data-stack] tbody td:last-child::before,
-    table[data-stack] tbody td[colspan]::before { content: none; }
-    table[data-stack] tbody td:last-child { justify-content: flex-end; padding-block-start: var(--space-2); }
-    table[data-stack] tbody td[colspan] { display: table-cell; text-align: center; }
+  .saas-shell[data-collapsed="true"] {
+    grid-template-columns: 4.25rem 1fr;
   }
-  /* Row of label / big number pairs (campaign statistics). */
-  dl.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: var(--space-4); margin: 0; }
-  dl.stat-row dd { margin: 0; }
+
+  /* Left Sidebar */
+  .saas-sidebar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background-color: var(--faint);
+    border-inline-end: 1px solid var(--border);
+    z-index: 20;
+  }
+  .saas-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    height: 3.75rem;
+    padding: 0 var(--space-3);
+    flex-shrink: 0;
+  }
+  .saas-brand-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-medium);
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    flex-shrink: 0;
+  }
+  .saas-sidebar-nav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-2) 0 var(--space-4);
+  }
+  .saas-nav-section-label {
+    padding: var(--space-3) var(--space-4) var(--space-1);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+  .saas-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .saas-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem var(--space-4);
+    font-size: 0.875rem;
+    font-weight: 450;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    border-inline-start: 3px solid transparent;
+    transition: color 120ms ease, background-color 120ms ease;
+    &:hover {
+      color: var(--foreground);
+      background-color: color-mix(in oklab, var(--secondary) 60%, transparent);
+    }
+    &[aria-current] {
+      color: var(--primary-ink);
+      font-weight: 500;
+      border-inline-start-color: var(--primary);
+      background-color: color-mix(in oklab, var(--primary) 6%, transparent);
+    }
+  }
+  .saas-subnav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.125rem 0 0.25rem 2.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.625rem;
+      border-radius: var(--radius-small);
+      font-size: 0.8125rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      &:hover { color: var(--foreground); }
+      &[aria-current] { color: var(--primary-ink); font-weight: 500; }
+    }
+  }
+  .saas-sidebar-footer {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    flex-shrink: 0;
+  }
+
+  /* Top Header Bar */
+  .saas-topbar {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 0 var(--space-8);
+    background-color: var(--card);
+    border-bottom: 1px solid var(--border);
+    z-index: 15;
+  }
+  .saas-search-bar {
+    width: min(100%, 24rem);
+    justify-content: flex-start;
+    gap: var(--space-2);
+    height: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-medium);
+    &:hover {
+      border-color: var(--input);
+      color: var(--foreground);
+    }
+  }
+  .saas-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .saas-mobile-toggle {
+    display: none;
+  }
+
+  /* Main Workspace */
+  .saas-main {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    background-color: var(--background);
+  }
+
+  @media (max-width: 56rem) {
+    .saas-shell {
+      grid-template-columns: 1fr !important;
+    }
+    .saas-topbar {
+      grid-column: 1;
+      padding: 0 var(--space-4);
+    }
+    .saas-main {
+      grid-column: 1;
+    }
+    .saas-mobile-toggle {
+      display: inline-flex;
+    }
+    .saas-sidebar {
+      display: none;
+      position: fixed;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: 15.5rem;
+      box-shadow: 4px 0 24px rgb(0 0 0 / 0.12);
+    }
+    .saas-shell[data-mobile-nav="open"] .saas-sidebar {
+      display: flex;
+    }
+  }
+
+  /* Clean Airy KPI Grid (matches reference: no colored top bar, clean white card) */
+  .bento-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  @media (max-width: 72rem) {
+    .bento-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 44rem) {
+    .bento-kpi-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  }
+
+  .bento-split {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 64rem) {
+    .bento-split { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .kpi-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: 1.125rem 1.25rem;
+  }
+  .kpi-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+  .kpi-value {
+    margin: 0;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--foreground);
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-hint {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  .kbd-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.0625rem 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    color: var(--muted-foreground);
+    background-color: var(--faint);
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+  }
+  .status-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  .status-dot[data-state="online"] { background-color: var(--success); }
+  .status-dot[data-state="offline"] { background-color: var(--muted-foreground); }
+
+  /* Clean Inline Section Toolbar */
+  .crm-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  /* Split Auth Layout */
+  .auth-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    min-height: 100dvh;
+    background-color: var(--background);
+  }
+  @media (max-width: 56rem) {
+    .auth-split { grid-template-columns: minmax(0, 1fr); }
+    .auth-showcase { display: none; }
+  }
+  .auth-showcase {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-10);
+    background-color: #0b1411;
+    color: #f3f4f6;
+    border-inline-end: 1px solid #1a2923;
+  }
+  .auth-showcase-card {
+    background-color: #111f1a;
+    border: 1px solid #1f362d;
+    border-radius: var(--radius-large);
+    padding: var(--space-6);
+  }
+  .auth-form-pane {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+    overflow-y: auto;
+  }
 }
