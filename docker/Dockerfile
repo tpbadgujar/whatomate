@@ -90,4 +90,4 @@ EXPOSE 8080
 # `args = ["server", "-migrate", ...]` (no `command`) then appends to the
 # entrypoint instead of replacing the binary with "server".
 ENTRYPOINT ["./whatomate"]
-CMD ["server", "-config", "config.toml", "-migrate"]
+CMD ["server", "-config", "config.toml"]
